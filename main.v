@@ -7,6 +7,7 @@ module binary_refinement(
     input but_newplayer,
     input but_score, 
     input but_submit, // this button works in game mode 
+    //INPUT : keypad 
     output wire [7:0] rish, 
     output wire [3:0] an 
 );
@@ -47,11 +48,13 @@ debouncer debounce_newgame(clk, but_submit, dbncd_but_submit);
 
 
 
-// 000: your score
-// 001: leaderboard 
-// 010: game 
-// 011: Correct/incorrect 
-// 100: newplayer 
+// 000: your score  : they will display (name:) Cxxx , Sxxx (display both at once -- we will have 2 seven segment displays)
+// 001: leaderboard : they will display (name:) Lxxx , Sxxx
+
+// 010: game        : there's a random challenge displaying on the 7-seg, and you turn the switches to match the binary number, and then press but_submit
+                        //automatically, you go into correct/incorrect mode, which displays if you were correct or incorrect (and how many points you got from that single game), and then after a certain amoutn of time, changes into score mode
+// 011: Correct/incorrect : explained above. Shows {1,0} for like 2 seconds, then goes into your score mode
+// 100: newplayer         : you tap on the keypad your name (which is 3 numbers) which show on the display, and once you click submit, you go into your score mode.
 reg [2:0] mode; 
 
 // clocks
@@ -68,7 +71,7 @@ wire [3:0] your_name_0;
 wire [3:0] your_name_1;
 wire [3:0] your_name_2;
 
-
+//have rish registers
 
 
 //leaderboard mode variables
@@ -95,7 +98,7 @@ num_to_digits num_to_digits_game_mode_inst(
     .dig3(rand_chal_dig3)
 );
 
-sevensig sevensig_()
+sevensig sevensig_();
 
 //correct_incorrect mode
 reg is_correct; 
@@ -136,25 +139,5 @@ demux_display_based_on_mode demux_display_based_on_mode_inst(
 	.s1(s1),
 	.s0(s0)
 	);
-
-
-sevensig sevensig_m1(.disp(m1), .rish(rish_min1));
-sevensig sevensig_m0(.disp(m0), .rish(rish_min0));
-sevensig sevensig_s1(.disp(s1), .rish(rish_sec1));
-sevensig sevensig_s0(.disp(s0), .rish(rish_sec0));
-
-
-display display_inst(
-    .clk_high(clk_high),
-    .rst(btns),
-    .sel(sw0),
-	.adj(sw1),
-    .min1(rish_min1),
-    .min0(rish_min0),
-    .sec1(rish_sec1),
-    .sec0(rish_sec0),
-    .rish(rish),
-    .an(an)
-    );
 
 endmodule
