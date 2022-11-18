@@ -83,7 +83,7 @@ wire [3:0] leader_name_3;
 
 
 //game mode 
-reg [8:0] rand_chal; // allow also negative numbers 
+reg [8:0] rand_chal ; // allow also negative numbers 
 wire [3:0] rand_chal_dig0;
 wire [3:0] rand_chal_dig1;
 wire [3:0] rand_chal_dig2;
